@@ -50,6 +50,17 @@ costs 2.4 decoding steps. To speed up the 14B, take work away from the CPU.
 
 ## Next
 
+**The API port (branch `api-standalone`, 2026-10-28) is the work in progress** — the model system and
+llama.cpp go, the app speaks to an OpenAI-compatible server instead. The core is in and measured (above).
+Next: the `Session` at text level — the frames (SEED/SENT/BRIDGE/META), the debounce, the min-new rule, the
+notes surviving edits and the branch agreement all go over as they are, because they are prompt, not
+runtime; `Detokenizer`, `id_slot` and `assume_cached` disappear (the SSE arrives as text and the cache is
+the server's). Then `ChatService` without catalog/bench/downloads, the Models view becoming an API settings
+tab, and only then the deletions. What is lost stays lost and was agreed: `logit_bias` only where a server
+exposes `/tokenize` (frame-only elsewhere, 41-54% phrase fraud against the 17-26% measured), and `judge`
+reduced to temperature-0 consistency. What is gained: `cached_tokens` measured instead of estimated from
+bandwidth. The numbered queue below is unchanged and still stands.
+
 0. **IQ4_XS as the default quantization, and the estimate fixed** (from the 4070 SUPER results below).
    - Done on the 4B: IQ4_XS is not worth it there (+4%, 26/28 against 28/28, below). For the 14B: the paired run on
      all 24 problems (`quant_14b_4070s.json`, running) decides whether IQ4_XS becomes its `default_quant`; then the
@@ -106,6 +117,20 @@ costs 2.4 decoding steps. To speed up the 14B, take work away from the CPU.
 
 ## Done and measured
 
+- **2026-10-28 · Over an API the read-ahead survives, measured on the fourth machine** (branch
+  `api-standalone`). The app talks to an OpenAI-compatible server now (`api_backend.py`, profiles in
+  `mafdet/providers.json`): messages in, SSE out, the server owns the tokenizer and the cache. What we
+  control is which text goes into the request, and `core/prefix.py` restates the common-prefix rule at
+  that level: a cut is trusted only just after letters or digits with a separator next to it. Checked
+  against the real tokenizer (`research/prefix_boundary.py`, Qwen/Qwen3-4B): **569/569** word-end cuts are
+  token boundaries, while cuts *after* the space are **11/569** — the space belongs to the next token, and
+  a merge can take trailing punctuation together with the newline after it ("duplicati.\n\n" is one token).
+  Getting this wrong would have shown up as the cache quietly stopping, with the app still looking fine.
+  `research/api_spike.py` measures it on llama.cpp's OpenAI endpoint, reading the server's own `timings`
+  (the endpoint does not report `cached_tokens`): short messages 30 vs 27 ms — nothing to save, as the
+  thesis says — and a 435-word document read at a pause then the question, **576 → 356 ms**, prefill at
+  Enter **191 → 21 ms**. The server did serve the document from its cache. The warm costs what it always
+  cost; it just costs it while the user is still typing. Tests: 113 pass.
 - **2026-10-27 · Any GGUF: the Hugging Face search and files of your own.** The app now runs models outside
   the catalog: searched and downloaded in the app (`mafdet/core/hub.py`), put in `~/.mafdet/models`, or added
   from anywhere. Their tokenizer is the GGUF's own, through llama-server's `/tokenize`, `/detokenize` and
