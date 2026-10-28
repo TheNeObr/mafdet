@@ -2,6 +2,7 @@
 import http.server
 import struct
 import threading
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -105,7 +106,7 @@ def test_files_of_your_own(tmp_path):
     write_gguf(root / "mmproj-F16.gguf")                                   # a vision projector: not a model
     write_gguf(root / "Split-Q4_K_M-00001-of-00002.gguf")                  # its second part is missing
     write_gguf(root / "Qwen3-4B-Q4_K_M.gguf")                              # a catalog file: the catalog's card
-    own = {v.file.rsplit("/", 1)[-1]: v for v in catalog.local_variants()}
+    own = {Path(v.file).name: v for v in catalog.local_variants()}     # Path: the separator is the system's
     assert set(own) == {"Mine-Q4_K_M.gguf", "Mine-Q8_0.gguf", "Thinker-Q4_K_M.gguf"}
     assert own["Mine-Q4_K_M.gguf"].model["id"] == own["Mine-Q8_0.gguf"].model["id"]
     thinker = own["Thinker-Q4_K_M.gguf"].model

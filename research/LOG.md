@@ -29,6 +29,20 @@ AMD Radeon (since 2026-10-26): supported through llama.cpp's Vulkan build, no Ra
 asks for volunteers ("Help wanted: benchmarks on an AMD Radeon"): `mafdet doctor`, Measure, and
 `research/thinking_ahead.py radeon_4b.json`, sent as an issue.
 
+Fourth machine (since 2026-10-28, set up from a fresh clone): RTX 3070 16 GB (448 GB/s, driver 595.97), i9-11980HK
+(8 cores / 16 threads), 32 GB RAM (~15 GB/s measured by `doctor`), Windows 11 (26100), Python 3.12.10 from
+python.org (per-user, `py` launcher on PATH). Its C: has 2.7 GB free, so `MAFDET_HOME=E:/mafdet-home` and
+`HF_HOME=E:/hf-cache` are set as user environment variables (the repository and `.venv` stay on J:). llama.cpp
+b11747 Windows · CUDA 13.4 installed by `mafdet doctor --install`; Qwen3-4B Q4_K_M downloaded with
+`mafdet models --download`. Checked on this machine: `mafdet judge --backend llama` 20 trials, 19 ok + 1 tie,
+0 errors, cache reuse verified on 556 requests; `mafdet hunt --backend llama --scenario clean` (5 chars/s,
+holdback 3, debounce 250): 75.1 ms from Enter to the first token without incremental prefill, **25.5 ms** with it
+(137 syncs, 201 tokens computed, 4 discarded, 1.4% busy, tie) — on a card that fast the message is small next to
+the typing time, so the saved share is what matters, not the milliseconds. Tests: 97 pass; one Windows fix in
+`tests/test_local_models.py` (the `local_variants()` keys were taken with `rsplit("/")`, which does not split a
+Windows path: the code stores `str(p)`, backslashes and all) now uses `Path(v.file).name`, which is right on both.
+`mafdet` on PATH through `J:/Nchat/mafdet/.venv/Scripts`.
+
 Key fact learned: on a model split between GPU and CPU, the CPU's layers *compute* every token they are
 given. Anything that processes several tokens at once (parallel branches, speculative-decoding drafts)
 costs the 14B almost proportionally: 2 sequences run at 77% of the speed of one each, a 9-token draft
