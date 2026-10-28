@@ -1,0 +1,102 @@
+{
+ "comment": "Server-side prompt caching, not a cache we control: the read-ahead pays for one prefill of what is new and the server serves the rest from its prefix cache. cut: where the stable prefix may end. word = the end of the last complete word, before the space (a cut after the space is not a token boundary: 'word ' tokenizes as [word, ' ▁'] but 'word more' as [word, ' ▁more'], and the prefix stops being a prefix). tokenize/logit_bias are per-server: with tokenize the engine counts tokens exactly and the META_BIAS of the frames comes back.",
+ "providers": [
+  {
+   "id": "openai",
+   "name": "OpenAI",
+   "base_url": "https://api.openai.com/v1",
+   "key_env": "OPENAI_API_KEY",
+   "model": "gpt-4o-mini",
+   "prefix_cache": true,
+   "cache_min_tokens": 1024,
+   "tokenize": false,
+   "logit_bias": true,
+   "reasoning_field": "reasoning_content"
+  },
+  {
+   "id": "openrouter",
+   "name": "OpenRouter",
+   "base_url": "https://openrouter.ai/api/v1",
+   "key_env": "OPENROUTER_API_KEY",
+   "model": "qwen/qwen3-4b",
+   "prefix_cache": true,
+   "cache_min_tokens": 1024,
+   "tokenize": false,
+   "logit_bias": false,
+   "reasoning_field": "reasoning"
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek",
+   "base_url": "https://api.deepseek.com/v1",
+   "key_env": "DEEPSEEK_API_KEY",
+   "model": "deepseek-reasoner",
+   "prefix_cache": true,
+   "cache_min_tokens": 256,
+   "tokenize": false,
+   "logit_bias": false,
+   "reasoning_field": "reasoning_content"
+  },
+  {
+   "id": "llama-server",
+   "name": "llama.cpp server",
+   "base_url": "http://127.0.0.1:8080/v1",
+   "key_env": "",
+   "model": "",
+   "prefix_cache": true,
+   "cache_min_tokens": 64,
+   "tokenize": true,
+   "logit_bias": true,
+   "logit_bias_by_id": true,
+   "reasoning_field": "reasoning_content"
+  },
+  {
+   "id": "vllm",
+   "name": "vLLM",
+   "base_url": "http://127.0.0.1:8000/v1",
+   "key_env": "",
+   "model": "",
+   "prefix_cache": true,
+   "cache_min_tokens": 16,
+   "tokenize": true,
+   "logit_bias": false,
+   "reasoning_field": "reasoning_content"
+  },
+  {
+   "id": "ollama",
+   "name": "Ollama",
+   "base_url": "http://127.0.0.1:11434/v1",
+   "key_env": "",
+   "model": "qwen3:4b",
+   "prefix_cache": true,
+   "cache_min_tokens": 64,
+   "tokenize": false,
+   "logit_bias": false,
+   "reasoning_field": ""
+  },
+  {
+   "id": "lm-studio",
+   "name": "LM Studio",
+   "base_url": "http://127.0.0.1:1234/v1",
+   "key_env": "",
+   "model": "",
+   "prefix_cache": true,
+   "cache_min_tokens": 64,
+   "tokenize": false,
+   "logit_bias": false,
+   "reasoning_field": ""
+  },
+  {
+   "id": "generic",
+   "name": "OpenAI-compatible",
+   "base_url": "",
+   "key_env": "",
+   "model": "",
+   "prefix_cache": true,
+   "cache_min_tokens": 0,
+   "tokenize": false,
+   "logit_bias": false,
+   "reasoning_field": ""
+  }
+ ]
+}

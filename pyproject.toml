@@ -57,5 +57,5 @@ version = { attr = "mafdet.__version__" }
 include = ["mafdet*"]
 
 [tool.setuptools.package-data]
-mafdet = ["samples/*.txt", "catalog.json", "ui/*.html", "ui/*.css", "ui/*.js", "ui/*.ico", "ui/fonts/*",
+mafdet = ["samples/*.txt", "providers.json", "ui/*.html", "ui/*.css", "ui/*.js", "ui/*.ico", "ui/fonts/*",
           "ui/i18n/*.json"]
