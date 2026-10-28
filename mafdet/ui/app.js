@@ -173,6 +173,7 @@
     hardware: (fresh) => (fresh ? M.post("/api/hardware/refresh") : M.get("/api/hardware"))
       .then((h) => { M.state.hardware = h; M.emit("hardware", h); }).catch(() => {}),
     runtime: () => M.get("/api/runtime").then((r) => { M.state.runtime = r; M.emit("runtime", r); }).catch(() => {}),
+    providers: () => M.get("/api/providers").then((p) => { M.state.providers = p; M.emit("providers", p); }).catch(() => {}),
   };
 
   let lastState = "";
@@ -263,7 +264,7 @@
     M.state.settings = await M.get("/api/settings").catch(() => ({ language: "en" }));
     renderRail();
     await M.setLang(M.state.settings.language || "en", false);
-    await Promise.all([M.refresh.catalog(), M.refresh.hardware(), M.refresh.runtime(),
+    await Promise.all([M.refresh.catalog(), M.refresh.hardware(), M.refresh.runtime(), M.refresh.providers(),
       M.get("/api/status").then(M.setStatus).catch(() => {})]);
     M.emit("ready");
     M.go("chat");

@@ -119,6 +119,7 @@ def make_handler(app: ChatService, token: str, port_box: list):
                 "/api/catalog": app.catalog,
                 "/api/runtime": app.runtime,
                 "/api/settings": lambda: app.settings,
+                "/api/providers": app.providers,
                 "/api/tasks": app.jobs,
             }
             if path in routes:

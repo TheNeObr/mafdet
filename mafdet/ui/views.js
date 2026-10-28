@@ -466,7 +466,7 @@
   // =====================================================================================
 
   const LANG_NAMES = { en: "English", it: "Italiano", fr: "Français", de: "Deutsch" };
-  const RELOAD = ["think", "ahead", "think_ahead", "max_tokens", "ctx", "device", "recycle", "gatherer", "branches"];
+  const RELOAD = ["provider", "model", "think", "ahead", "think_ahead", "max_tokens", "ctx", "device", "recycle", "gatherer", "branches"];
 
   async function save(changes) {
     const before = M.state.settings || {};
@@ -499,7 +499,18 @@
     const gatherer = `<select data-key="gatherer"><option value="">${t("settings.gatherer.none")}</option>` +
       small.map((m) => `<option value="${m.id}"${st.gatherer === m.id ? " selected" : ""}>${esc(m.name)} · ${m.quant}</option>`).join("") + `</select>`;
     const ctx = `<select data-key="ctx">${[4096, 8192, 16384, 32768].map((n) => `<option value="${n}"${st.ctx === n ? " selected" : ""}>${M.num(n)}</option>`).join("")}</select>`;
+    const text = (key, v) =>
+      `<div class="set-row"><div class="set-name">${t(`settings.api.${key}`)}</div><p class="set-hint">${t(`settings.api.${key}.hint`)}</p>` +
+      `<div class="set-control"><input type="text" data-key="api_${key}" value="${esc(v || "")}" spellcheck="false"></div></div>`;
+    const providers = (M.state.providers || []).map((p) => `<option value="${p.id}"${st.provider === p.id ? " selected" : ""}>` +
+      `${esc(p.name)}${p.has_key ? "" : " · " + t("settings.api.no_key")}</option>`).join("");
     $("settings").innerHTML = [
+      section("settings.section.api", [
+        `<div class="set-row"><div class="set-name">${t("settings.api.provider")}</div><p class="set-hint">${t("settings.api.provider.hint")}</p>` +
+        `<div class="set-control"><select data-key="provider"><option value=""${!st.provider ? " selected" : ""}>${t("settings.api.none")}</option>${providers}</select></div></div>`,
+        text("model", st.api_model),
+        text("base", st.api_base),
+      ]),
       section("settings.section.general", [
         row("settings.language", "settings.language.hint", seg("language", Object.entries(LANG_NAMES), st.language)),
       ]),

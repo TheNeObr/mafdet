@@ -249,5 +249,14 @@
  "error.not_ready": "Das Modell ist noch nicht bereit.",
  "unit.s": "{n} s",
  "unit.min": "{n} min",
- "unit.h": "{n} h"
+ "unit.h": "{n} h",
+ "settings.section.api": "API",
+ "settings.api.provider": "Anbieter",
+ "settings.api.provider.hint": "Wohin der Chat geht. Das Vorauslesen ist der Prompt-Cache des Servers: er lohnt nur, wo der Server einen hat, und oberhalb seines Minimums.",
+ "settings.api.model": "Modell",
+ "settings.api.model.hint": "Der Name, unter dem der Server dieses Modell kennt.",
+ "settings.api.base": "Serveradresse",
+ "settings.api.base.hint": "Die /v1-Adresse. Der Schlussel kommt aus der Umgebungsvariablen, die der Anbieter nennt, nie aus dieser Datei.",
+ "settings.api.none": "Kein Anbieter (ein eigenes Modell)",
+ "settings.api.no_key": "ohne Schluessel"
 }

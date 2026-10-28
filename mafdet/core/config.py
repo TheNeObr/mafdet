@@ -20,6 +20,9 @@ LANGUAGES = ("en", "it", "fr", "de")
 DEFAULTS = {
     "language": "en",
     "model": "",                      # catalog id of the model to load at start ("" = none chosen yet)
+    "provider": "",                   # API profile (providers.json): when set, the chat goes over the API
+    "api_model": "",                  # the model name the server knows it by (the API path)
+    "api_base": "",                   # the server's address, when it is not the profile's default
     "local_models": [],               # GGUF files added from elsewhere on disk (they stay where they are)
     "launcher": "",                   # "gui" or "tui" when the launcher should not ask again
     "first_run_done": False,

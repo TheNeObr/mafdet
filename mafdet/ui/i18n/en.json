@@ -249,5 +249,14 @@
  "error.not_ready": "The model is not ready yet.",
  "unit.s": "{n} s",
  "unit.min": "{n} min",
- "unit.h": "{n} h"
+ "unit.h": "{n} h",
+ "settings.section.api": "API",
+ "settings.api.provider": "Provider",
+ "settings.api.provider.hint": "Where the chat goes. The reading ahead is the server's prompt cache: it only pays where the server has one, and above its minimum.",
+ "settings.api.model": "Model",
+ "settings.api.model.hint": "The name the server knows this model by.",
+ "settings.api.base": "Server address",
+ "settings.api.base.hint": "The /v1 address. The key comes from the environment variable the provider names, never from this file.",
+ "settings.api.none": "No provider (a model of our own)",
+ "settings.api.no_key": "no key"
 }

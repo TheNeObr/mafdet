@@ -19,12 +19,13 @@ import socket
 import threading
 import time
 
-from . import bench, catalog, config, downloads, hardware, hub, llama_setup
+from . import bench, catalog, config, downloads, hardware, hub, llama_setup, providers
+from ..api_backend import ApiBackend
 from ..llama_backend import find_llama_server
 from .tasks import TaskManager
 
 # Settings that need the model loaded again when they change.
-RELOAD_KEYS = {"think", "ahead", "think_ahead", "max_tokens", "ctx", "device", "recycle", "gatherer", "branches"}
+RELOAD_KEYS = {"provider", "model", "think", "ahead", "think_ahead", "max_tokens", "ctx", "device", "recycle", "gatherer", "branches"}
 
 ERROR_CODES = [                                   # (text in the message, code the interfaces translate)
     ("Cannot find llama-server", "llama_missing"),
@@ -87,6 +88,22 @@ class ChatService:
     def runtime(self) -> dict:
         return llama_setup.status()
 
+    def providers(self) -> list[dict]:
+        """The API profiles the chat can talk to, with whether each one's key is there."""
+        return [dict(p, has_key=bool(providers.api_key(p))) for p in providers.providers()]
+
+    def _api_session(self):
+        """A session over an API profile. The model name comes from the settings, not the catalog."""
+        from ..api_session import ApiSession, backend_for
+        if providers.find(self.settings["provider"]) is None:
+            return None
+        st = self.settings
+        backend = backend_for(st)
+        s = ApiSession(backend, think=st["think"], think_ahead=st["think_ahead"], max_tokens=st["max_tokens"])
+        if not s.backend.ready():
+            s.state, s.error = "error", f"nothing answering on {backend.base}"
+        return s
+
     def status(self) -> dict:
         with self._lock:
             s = self.session
@@ -145,6 +162,14 @@ class ChatService:
         from ..watch import Session
         with self._lock:
             self.unload()
+            if self.settings.get("provider"):                       # an API profile: no llama.cpp, no catalog
+                session = self._api_session()
+                if session is None:
+                    return {"state": "error", "error": f"unknown provider: {self.settings['provider']}",
+                            "error_code": "load_failed"}
+                self.variant_id = self.settings["model"]
+                self.session = session
+                return self.status()
             if self.overrides is not None and not variant_id:
                 args = self.overrides
                 args.port = getattr(args, "port", 0) or free_port()
@@ -172,7 +197,8 @@ class ChatService:
 
     def autoload(self):
         """At start: load the model of the settings, if llama.cpp and the file are there."""
-        if self.overrides is not None or (self.settings["model"] and find_llama_server(required=False)):
+        if self.overrides is not None or self.settings["provider"] or \
+                (self.settings["model"] and find_llama_server(required=False)):
             threading.Thread(target=self.load, daemon=True).start()
 
     # ---- chat --------------------------------------------------------------------

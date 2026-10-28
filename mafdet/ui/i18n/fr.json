@@ -249,5 +249,14 @@
  "error.not_ready": "Le modèle n'est pas encore prêt.",
  "unit.s": "{n} s",
  "unit.min": "{n} min",
- "unit.h": "{n} h"
+ "unit.h": "{n} h",
+ "settings.section.api": "API",
+ "settings.api.provider": "Fournisseur",
+ "settings.api.provider.hint": "Où va la discussion. La lecture anticipée, c'est le cache de prompt du serveur : elle ne paie que là où le serveur en a un, et au-dessus de son minimum.",
+ "settings.api.model": "Modèle",
+ "settings.api.model.hint": "Le nom sous lequel le serveur connaît ce modèle.",
+ "settings.api.base": "Adresse du serveur",
+ "settings.api.base.hint": "L'adresse /v1. La clé vient de la variable d'environnement que le fournisseur indique, jamais de ce fichier.",
+ "settings.api.none": "Aucun fournisseur (un modele a nous)",
+ "settings.api.no_key": "sans cle"
 }

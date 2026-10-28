@@ -249,5 +249,14 @@
  "error.not_ready": "Il modello non è ancora pronto.",
  "unit.s": "{n} s",
  "unit.min": "{n} min",
- "unit.h": "{n} h"
+ "unit.h": "{n} h",
+ "settings.section.api": "API",
+ "settings.api.provider": "Fornitore",
+ "settings.api.provider.hint": "Dove va la chat. La lettura anticipata è la cache di prompt del server: paga solo dove il server ce l'ha, e sopra il suo minimo.",
+ "settings.api.model": "Modello",
+ "settings.api.model.hint": "Il nome con cui il server conosce questo modello.",
+ "settings.api.base": "Indirizzo del server",
+ "settings.api.base.hint": "L'indirizzo /v1. La chiave viene dalla variabile d'ambiente che il fornitore indica, mai da questo file.",
+ "settings.api.none": "Nessun fornitore (un modello nostro)",
+ "settings.api.no_key": "senza chiave"
 }
